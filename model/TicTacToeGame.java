@@ -2,7 +2,6 @@ package model;
 
 public class TicTacToeGame {
     
-    private GameState state = GameState.INIT;
     private PlayStrategy strategy = PlayStrategy.VsHuman;
     private Marking[] board = new Marking[9];
     private Marking turn = Marking.X;
@@ -131,13 +130,6 @@ public class TicTacToeGame {
          }
     }
 
-    public GameState getState() {
-        return state;
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
-    }
 
     public PlayStrategy getStrategy() {
         return strategy;

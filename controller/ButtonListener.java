@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 
 import model.TicTacToeGame;
 import view.BoardButton;
-import model.GameState;
 
 public class ButtonListener implements ActionListener {
 
@@ -17,7 +16,6 @@ public class ButtonListener implements ActionListener {
 
         game.play(button.getPos());
         if (game.getWinner() != null) {
-            game.setState(GameState.OVER);
             System.out.println("Game Over: " + game.getWinner());
         } else {
             game.changeTurns();
