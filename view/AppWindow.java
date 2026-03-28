@@ -9,8 +9,10 @@ import controller.ButtonListener;
 import controller.NewGameButtonListener;
 import controller.StrategyButtonListener;
 import model.Marking;
-import model.PlayStrategy;
 import model.TicTacToeGame;
+import model.strategyPattern.VsComputerStrategy;
+import model.strategyPattern.VsHumanStrategy;
+import model.strategyPattern.VsSmartComputerStrategy;
 import view.statePattern.GameState;
 import view.statePattern.GameStateInit;
 
@@ -24,12 +26,14 @@ public class AppWindow extends JFrame {
 
     public static final String vsHumanAction = "vs. Human";
     public static final String vsComputerAction = "vs. Computer";
+    public static final String vsSmartComputerAction = "vs. Smart Computer";
 
-    private AppCanvas canvas = new AppCanvas();
-    private BoardButton[] markingButtons = new BoardButton[9];
-    private JButton newGameButton = new JButton("New Game");
-    private JRadioButton vsHumanButton;
-    private JRadioButton vsComputerButton;
+    public AppCanvas canvas = new AppCanvas();
+    public BoardButton[] markingButtons = new BoardButton[9];
+    public JButton newGameButton = new JButton("New Game");
+    public JRadioButton vsHumanButton;
+    public JRadioButton vsComputerButton;
+    public JRadioButton vsSmartComputerButton;
 
     private GameState state = new GameStateInit();
 
@@ -59,16 +63,20 @@ public class AppWindow extends JFrame {
 
         JPanel radioPanel = new JPanel();
         radioPanel.setBorder(new TitledBorder("Play strategy"));
-        vsHumanButton = new JRadioButton(vsHumanAction, App.game.getStrategy() == PlayStrategy.VsHuman);
-        vsComputerButton = new JRadioButton(vsComputerAction, App.game.getStrategy() == PlayStrategy.VsComputer);
+        vsHumanButton = new JRadioButton(vsHumanAction, App.game.getStrategy() instanceof VsHumanStrategy);
+        vsComputerButton = new JRadioButton(vsComputerAction, App.game.getStrategy() instanceof VsComputerStrategy);
+        vsSmartComputerButton = new JRadioButton(vsSmartComputerAction, App.game.getStrategy() instanceof VsSmartComputerStrategy); // placeholder for smart computer strategy
         radioPanel.add(vsHumanButton);
         radioPanel.add(vsComputerButton);
+        radioPanel.add(vsSmartComputerButton);
         StrategyButtonListener strategyListener = new StrategyButtonListener();
         vsHumanButton.addActionListener(strategyListener);
         vsComputerButton.addActionListener(strategyListener);
+        vsSmartComputerButton.addActionListener(strategyListener);
         ButtonGroup strategyGroup = new ButtonGroup();
         strategyGroup.add(vsHumanButton);
         strategyGroup.add(vsComputerButton);
+        strategyGroup.add(vsSmartComputerButton);
         southPanel.add(radioPanel);
 
         JPanel actionPanel = new JPanel();
@@ -102,34 +110,7 @@ public class AppWindow extends JFrame {
         for (int i = 0; i < board.length; i++) {
             markingButtons[i].setMark(board[i]);
         }
-
-        switch(game.getState()) {
-            case INIT:
-                for (var b: markingButtons) {
-                    b.setEnabled(false);
-                }
-                newGameButton.setEnabled(true);
-                vsHumanButton.setEnabled(true);
-                vsComputerButton.setEnabled(true);
-                break;
-            case PLAYING:
-                newGameButton.setEnabled(false);
-                vsHumanButton.setEnabled(false);
-                vsComputerButton.setEnabled(false);
-                for (int i = 0; i < board.length; i++) {
-                    markingButtons[i].setEnabled(board[i] == Marking.U);
-                }
-                break;
-            case OVER:
-                for (var b: markingButtons) {
-                    b.setEnabled(false);
-                }
-                newGameButton.setEnabled(true);
-                vsHumanButton.setEnabled(true);
-                vsComputerButton.setEnabled(true);
-                break;
-        }
-        
+        state.updateWindow();
         canvas.repaint();
 
     }

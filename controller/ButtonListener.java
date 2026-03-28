@@ -16,6 +16,7 @@ public class ButtonListener implements ActionListener {
 
         game.play(button.getPos());
         if (game.getWinner() != null) {
+            App.win.goNextState();
             System.out.println("Game Over: " + game.getWinner());
         } else {
             game.changeTurns();
